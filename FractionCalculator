@@ -1,0 +1,120 @@
+import java.util.Scanner;
+
+public class FractionCalculator {
+    public static Scanner input = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        intro();
+
+        while (true) {
+            String operation = getOperation();
+            Fraction frac1 = getFraction();
+            Fraction frac2 = getFraction();
+            Fraction result = new Fraction(1,1);
+            String result2 = "";
+            if (operation.equals("=")) {
+                System.out.println(frac1+" "+operation+" "+frac2+" is "+frac1.equals(frac2));
+            } else {
+                if (operation.equals("+")) {
+                    result=frac1.add(frac2);
+                } else if (operation.equals("-")) {
+                    result=frac1.subtract(frac2);
+                } else if (operation.equals("/")) {
+                    if(frac2.getNumerator()==0) {
+                        result2="Undefined";
+                    } else {
+                        result=frac1.divide(frac2);
+                    }
+                } else if (operation.equals("*")) {
+                    if(frac2.getNumerator()==0) {
+                        result2 = "Undefined";
+                    } else {
+                    result=frac1.multiply(frac2);
+                    }
+                }
+
+            //print results
+        }   if (result2!="") {// division and multiplication by zero is undefined
+                System.out.println(frac1+" "+operation+" "+"0"+" = "+result2);
+            } else if (result.getNumerator()%result.getDenominator() == 0) {
+                System.out.println(frac1+" "+operation+" "+frac2+" = "+(result.getNumerator()/ result.getDenominator()));
+            } else {
+                System.out.println(frac1+" "+operation+" "+frac2+" = "+result.toString());
+            }
+        }
+    }
+
+    public static void intro() {
+        System.out.println("\nThis program is a fraction calculator");
+        System.out.println("It will add, subtract, multiply and divide fractions until you type Q to quit.");
+        System.out.println("Please enter your fraction in the form a/b, where a and b are integers.");
+        for (int i=0; i<80; i++) {
+            System.out.print("-");
+        }
+    }
+
+    public static String getOperation() {
+        System.out.println("\nPlease enter an operation (+, -, /, *, = or \"Q\" to quit): ");
+        Scanner input = new Scanner(System.in);
+        String operation = input.nextLine();
+
+        int x = 0;
+
+        while (x == 0) {
+            if (operation.equals("+") || operation.equals("-") || operation.equals("/") || operation.equals("*") || operation.equals("=")) {
+                x++;
+            } else if (operation.equalsIgnoreCase("q")) {
+                System.exit(0);
+            } else {
+                System.out.println("Invalid input, enter valid operation (+, -, /, *, = or \"Q\" to quit)");
+                operation = input.nextLine();
+            }
+        }
+        return operation;
+    }
+
+    public static boolean validFraction(String input) {
+        boolean valid;
+
+        if (input.startsWith("-")) {
+            input = input.replaceFirst("-",""); // or use 'input.substring("1", input.length())';
+        }
+        if (input.contains("-") || input.charAt(input.indexOf("/")+1)==('0') || input.contains(" "))  {
+            valid = false;
+        } else if (input.contains("/")) {
+            input = input.replace("/", "");
+        }
+        if (input.matches("^[0-9]+$") && input.length() > 0) {
+                valid = true;
+             } else {
+                valid = false;
+             }
+        return valid;
+    }
+
+    public static Fraction getFraction() {
+        System.out.println("Please enter a fraction (a/b) or integer (a): ");
+        String fracValue = input.nextLine();
+
+        //validate input
+        while (!validFraction(fracValue)) {
+            System.out.println("Please enter a fraction (a/b) or integer (a): ");
+            fracValue = input.nextLine();
+        }
+
+        //convert to numerator, denominator
+        int num = 0;
+        int den = 0;
+        if (fracValue.contains("/")) {
+            num = Integer.parseInt(fracValue.substring(0, fracValue.indexOf("/")));
+            den = Integer.parseInt(fracValue.substring(fracValue.indexOf("/")+1, fracValue.length()));
+        } else {
+            num = Integer.parseInt(fracValue);
+            den = 1;
+        }
+
+        // return fraction
+        Fraction fracConv = new Fraction(num, den);
+        return fracConv;
+    }
+}
